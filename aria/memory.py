@@ -9,9 +9,9 @@ DB_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "vectorstore")
 
 
 def get_collection(session_id: str = "default"):
-    client = chromadb.Client(
-        Settings(chroma_db_impl="duckdb+parquet", persist_directory=DB_DIR)
-    )
+    import chromadb
+
+    client = chromadb.PersistentClient(path=os.path.abspath(DB_DIR))
     return client.get_or_create_collection(name=session_id)
 
 
