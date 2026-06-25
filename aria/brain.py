@@ -59,16 +59,19 @@ def run_brain(user_text: str, session_id: str = "default") -> str:
 
     graph = build_agent(session_id)
     config = {"configurable": {"thread_id": session_id}}
-    result = graph.invoke(
-        {
-            "messages": [
-                {"role": "system", "content": f"Recent relevant memory:\n{context}"},
-                {"role": "user", "content": user_text},
-            ]
-        },
-        config=config,
-    )
-    answer = result["messages"][-1].content.strip()
+    try:
+        result = graph.invoke(
+            {
+                "messages": [
+                    {"role": "system", "content": f"Recent relevant memory:\n{context}"},
+                    {"role": "user", "content": user_text},
+                ]
+            },
+            config=config,
+        )
+        answer = result["messages"][-1].content.strip()
+    except Exception as e:
+        return f"Brain error: {e}"
     add_memory(session_id, user_text)
     add_memory(session_id, answer)
     return answer
